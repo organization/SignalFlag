@@ -44,7 +44,11 @@ class SignalFlag extends PluginBase implements Listener {
 	public function onBlockBreak(PlayerBlockBreakEvent $event) {
 		
 	}
-	
+	public function onChat(PlayerChatEvent $event) {
+		if(isset($this->status[$event->getPlayer()->getName()]) && $this->status[$event->getPlayer()->getName()] == self::ASK) {
+			
+		}
+	}
 	public function alert(CommandSender $sender, $message, $prefix = "[SignalFlag]"){
 		$sender->sendMessage(TextFormat::RED.$prefix." $message");
 	}
