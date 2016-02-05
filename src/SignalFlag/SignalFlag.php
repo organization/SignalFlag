@@ -24,8 +24,9 @@ class SignalFlag extends PluginBase implements Listener {
 	public function onCommand(CommandSender $sender, Command $command, $label, Array $args) {
 		if(strtolower($command) == "신호기") {
 			switch(strtolower($args[0])) {
-				case "설정" :
-				
+				case "추가" :
+				 $this->newFlag($sender);
+				 break;
 			}
 		}
 		if(strtolower($command) == "왕국") {
@@ -56,7 +57,8 @@ class SignalFlag extends PluginBase implements Listener {
 		if($this->status[$event->getPlayer()->getName()] == self::WAIT) {
 			$this->message($event->getPlayer(),"x : ".$x." y : ".$y. " z : ".$z);
 			$this->message($event->getPlayer(), "정말 그 블럭을 신호기로 만드시겠습니까?");
-			$this->status[$event->getPlayer()->getName()] = self::ASK;
+			$this->message($event->getPlayer(), "블럭을 한 번 더 터치해 주세요.");
+			$this->setAsk($event->getPlayer());
 		}
 	}
 	
@@ -67,9 +69,31 @@ class SignalFlag extends PluginBase implements Listener {
 	public function onChat(PlayerChatEvent $event) {
 		
 	}
+	public function newSignal(Player $player, Vector3 $vector) {
+		$this->setWait($player);
+	}
+	public function setFlag(Player $player, Vector3 $vector) {
+		$this->signalDB[$player->getName()]["flag"] = "$vector->x"."$vector->y"."$vector(z)";
+		$this->save()
+	}
+	public function setWait(Player $player) {
+		$this->status[$player->getName()] = self::WAIT;
+	}
+	public function setAsk(Player $player) {
+	 $this->status[$player->getName()] = self::ASK;
+	}
 	public function isAsk(Player $player) {
 		return isset($this->status[$player->getName()]) ? $this->status[$player->getName()] === self::ASK : false;
 	}
+	
+	public function isWait(Player $player) {
+		return isset($this->status[$player->getName()]) ? $this->status[$player->getName()] === self::WAIT : false;
+	}
+	
+	public function isWar(Player $player) {
+		return isset($this->status[$player->getName()]) ? $this->status[$player->getName()] === self::WAR : false;
+	}
+	
 	public function alert(CommandSender $sender, $message, $prefix = "[SignalFlag]"){
 		$sender->sendMessage(TextFormat::RED.$prefix." $message");
 	}
@@ -80,6 +104,7 @@ class SignalFlag extends PluginBase implements Listener {
 	
 	public function registerCommand($name, $fallback, $permission, $description = "", $usage = "") {
 		$commandMap = $this->getServer ()->getCommandMap ();	
+		
 	 	$command = new PluginCommand ( $name, $this );
 	 	$command->setDescription ( $description );	
 	 	$command->setPermission ( $permission );
