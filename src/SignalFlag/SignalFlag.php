@@ -11,23 +11,42 @@ use pocketmine\plugin\PluginCommand;
 class SignalFlag extends PluginBase implements Listener {
 	const WAIT = 0;
 	const ASK = 1;
+	const WAR = 2;
 	
 	public $signalDB;
 	private $touchTime, $status;
 	public function onEnable() {
 		
 	}
-	
+	public function onDisable() {
+		
+	}
 	public function onCommand(CommandSender $sender, Command $command, $label, Array $args) {
-		if(strtolower($command) = "signal") {
-			
+		if(strtolower($command) == "신호기") {
+			switch(strtolower($args[0])) {
+				case "설정" :
+				
+			}
 		}
+		if(strtolower($command) == "왕국") {
+			switch(strtolower($args[0])) {
+				case "설정" :
+				
+			}
+		}
+		return true;
 	}
 	//========Event Listener========
 	public function onBlockInteract(PlayerInteractEvent $event) {
 		$x = $event->getTouchVector()->getX();
 		$y = $event->getTouchVector()->getY();
 		$z = $event->getTouchVector()->getZ();
+		
+		if($this->isAsk($event->getPlayer())) {
+			$this->message($event->getPlayer(), "해당 블럭이 신호기로 설정되었습니다.")
+			$this->message($event->getPlayer(), "[/왕국 이름설정] 으로 왕국의 이름을 설정해주세요.")
+		}
+		
 		if( ($x.$y.$z) == $this->signalDB[$event->getPlayer()->getName()]["xyz"]) {
 		 	$this->signalDB[$event->getPlayer()->getName()]["break"]--;
 		 $event->getPlayer()->sendPopup(TextFormat::GREEN.$signalDB[$event->getPlayer()->getName()]["break"]."번 남았습니다.", "[SignalFlag]");
@@ -44,10 +63,12 @@ class SignalFlag extends PluginBase implements Listener {
 	public function onBlockBreak(PlayerBlockBreakEvent $event) {
 		
 	}
+	
 	public function onChat(PlayerChatEvent $event) {
-		if(isset($this->status[$event->getPlayer()->getName()]) && $this->status[$event->getPlayer()->getName()] == self::ASK) {
-			
-		}
+		
+	}
+	public function isAsk(Player $player) {
+		return isset($this->status[$player->getName()]) ? $this->status[$player->getName()] === self::ASK : false;
 	}
 	public function alert(CommandSender $sender, $message, $prefix = "[SignalFlag]"){
 		$sender->sendMessage(TextFormat::RED.$prefix." $message");
