@@ -16,7 +16,9 @@ class SignalFlag extends PluginBase implements Listener {
 	public $signalDB;
 	private $touchTime, $status;
 	public function onEnable() {
-		
+		@mkdir($this->getDataFolder());
+		$this->loadDB();
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 	}
 	public function onDisable() {
 		
